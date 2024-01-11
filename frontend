@@ -1,0 +1,62 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} UI Forms {% endblock %}
+
+
+{% block stylesheets %}{% endblock stylesheets %}
+{% block content %}
+
+    {% if duplicate_images %}
+        <h2>Duplicate Images:</h2>
+        <form id="duplicate-form" method="post" action="{% url 'process_selected_duplicates' %}">
+            {% csrf_token %}
+            <ul>
+                {% for img_pair in duplicate_images %}
+                    <li>
+                        <strong>Duplicate image path in Zip File:</strong> {{ img_pair.0 }}<br>
+                        <strong>Duplicate image path in Server path:</strong> {{ img_pair.1 }}
+                        <br>
+                        <img src="/media/{{ img_pair.1 }}" alt="Existing Image" style="max-width: 300px; max-height: 300px;">
+                        <br>                                                                 
+                    </li>
+                {% endfor %}
+            </ul>
+            
+        </form>
+        <button id="continueButton" onclick="callUrl('/app/continueButton/')">Continue</button>
+        <button id="cancelButton" onclick="cancelUrl('/app/cancel/')">Cancel</button>        
+    {% endif %}
+
+
+    <script>
+            function callUrl(url) {
+               
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function () {
+                        window.location.href='/app/continueButton/';
+                    },
+                    error: function () {
+                        console.error('Error calling URL');
+                    }
+                });
+            }
+
+            function cancelUrl(url) {
+                
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function () {
+                        window.location.href='/app/upload/';
+                    },
+                    error: function () {
+                        console.error('Error calling URL');
+                    }
+                });
+            }
+    </script>
+    
+
+{% endblock content %}
